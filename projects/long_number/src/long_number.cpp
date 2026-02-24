@@ -1,6 +1,10 @@
 #include "long_number.hpp"
+
+#include <algorithm>
 #include <cstring>
 #include <iostream>
+#include <stdexcept>
+#include <string> 
 
 using dim::LongNumber;
 		
@@ -181,32 +185,168 @@ bool LongNumber::operator > (const LongNumber& x) const {
 	
 }
 
+
 bool LongNumber::operator < (const LongNumber& x) const {
 	return !(*this > x) && !(*this == x);
 }
 
+bool LongNumber::operator >= (const LongNumber& x) const {
+    return (*this > x) || (*this == x);
+}
+
+bool LongNumber::operator <= (const LongNumber& x) const {
+    return (*this < x) || (*this == x);
+}
+
+
+
+LongNumber LongNumber::operator - () const {
+	LongNumber result = *this;
+	result.sign = -sign;
+	return result;
+}
+
 LongNumber LongNumber::operator + (const LongNumber& x) const {
-	return LongNumber("0");
+	
+    if (sign != x.sign) {
+        if (sign == -1) {
+            return x - (-(*this));
+        }
+        else {
+            return *this - (-x);
+        }
+    }
+    
+    int max_len = std::max(length, x.length) + 1;
+    int* result = new int[max_len]();
+    
+    int i = length - 1;
+    int j = x.length - 1;
+    int k = max_len - 1;
+    int carry = 0;
+    
+    while (i >= 0 || j >= 0 || carry > 0) {
+        int sum = carry;
+        if (i >= 0) sum += numbers[i--];
+        if (j >= 0) sum += x.numbers[j--];
+        
+        result[k--] = sum % 10;
+        carry = sum / 10;
+    }
+    
+    LongNumber res;
+    delete[] res.numbers;
+    
+    int start = 0;
+    while (start < max_len && result[start] == 0) {
+        start++;
+    }
+    
+    if (start == max_len) {
+        res.length = 1;
+        res.numbers = new int[1];
+        res.numbers[0] = 0;
+        res.sign = 1;
+    } else {
+        res.length = max_len - start;
+        res.numbers = new int[res.length];
+        for (int idx = 0; idx < res.length; idx++) {
+            res.numbers[idx] = result[start + idx];
+        }
+        res.sign = sign;
+    }
+    
+    delete[] result;
+    return res;
 }
 
 LongNumber LongNumber::operator - (const LongNumber& x) const {
-	return LongNumber("0");
+	return *this + (-x);
 }
 
 LongNumber LongNumber::operator * (const LongNumber& x) const {
-	return LongNumber("0");
+    if (this->is_zero() || x.is_zero()) {
+        return LongNumber("0");
+    }
+    
+    int res_len = length + x.length;
+    int* result = new int[res_len]();
+    
+    for (int i = length - 1; i >= 0; i--) {
+        int carry = 0;
+        for (int j = x.length - 1; j >= 0; j--) {
+            int pos = i + j + 1;
+            int prod = numbers[i] * x.numbers[j] + result[pos] + carry;
+            result[pos] = prod % 10;
+            carry = prod / 10;
+        }
+        result[i] += carry;
+    }
+    
+    LongNumber res;
+    delete[] res.numbers;
+    
+    int start = 0;
+    while (start < res_len && result[start] == 0) {
+        start++;
+    }
+    
+    if (start == res_len) {
+        res.length = 1;
+        res.numbers = new int[1];
+        res.numbers[0] = 0;
+        res.sign = 1;
+    } else {
+        res.length = res_len - start;
+        res.numbers = new int[res.length];
+        for (int i = 0; i < res.length; i++) {
+            res.numbers[i] = result[start + i];
+        }
+        res.sign = sign * x.sign;
+    }
+    
+    delete[] result;
+    return res;
 }
 
 LongNumber LongNumber::operator / (const LongNumber& x) const {
-	return LongNumber("0");
+    if (x.is_zero()) {
+        return LongNumber("0");
+    }
+    
+    LongNumber result("0");
+    LongNumber temp = *this;
+    
+    while (temp >= x) {
+        temp = temp - x;
+        result = result + LongNumber("1");
+    }
+	
+    result.sign = sign * x.sign;
+    return result;
 }
 
 LongNumber LongNumber::operator % (const LongNumber& x) const {
-	return LongNumber("0");
+    if (x.is_zero()) {
+        return LongNumber("0");
+    }
+    
+    LongNumber ost = *this;
+    
+    while (ost >= x) {
+        ost = ost - x;
+    }
+    
+    ost.sign = 1;
+    return ost;
 }
 
 bool LongNumber::is_negative() const noexcept {
 	return sign == -1;
+}
+
+bool LongNumber::is_zero() const noexcept {
+    return length == 1 && numbers[0] == 0;
 }
 
 int LongNumber::get_length(const char* const str) const noexcept {

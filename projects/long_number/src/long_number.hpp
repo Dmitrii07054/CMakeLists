@@ -26,7 +26,11 @@ namespace dim {
 			bool operator != (const LongNumber& x) const;
 			bool operator > (const LongNumber& x) const;
 			bool operator < (const LongNumber& x) const;
+			bool operator >= (const LongNumber& x) const;
+			bool operator <= (const LongNumber& x) const;
+			bool is_zero() const noexcept;
 			
+			LongNumber operator - () const;
 			LongNumber operator + (const LongNumber& x) const;
 			LongNumber operator - (const LongNumber& x) const;
 			LongNumber operator * (const LongNumber& x) const;
