@@ -1,7 +1,6 @@
 .*
 !.gitignore
 
-*.bat
 *.exe
 
 build_*/
