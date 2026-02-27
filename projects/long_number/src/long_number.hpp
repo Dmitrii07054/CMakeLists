@@ -43,5 +43,7 @@ namespace dim {
 			
 		private:
 			int get_length(const char* const str) const noexcept;
+			int abs_compare(const LongNumber& x) const noexcept;
+			LongNumber sub_abs(const LongNumber& x) const noexcept;
 	};
 }

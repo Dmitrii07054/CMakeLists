@@ -1,3 +1,0 @@
-test_bubble 1 0.213745
-test_long_number 1 0.102363
----

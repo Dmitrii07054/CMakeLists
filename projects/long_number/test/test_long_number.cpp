@@ -94,11 +94,92 @@ TEST(LongNumberTest, IsNegative) {
     EXPECT_FALSE(zero.is_negative());
 }
 
+
+TEST(LongNumberTest, Division) {
+    std::cout << "\n=== STARTING DIVISION TESTS ===\n";
+    
+    std::cout << "Test 1: 12345 / 12" << std::endl;
+    LongNumber a("12345");
+    LongNumber b("12");
+    LongNumber result = a / b;
+    EXPECT_EQ(result, LongNumber("1028"));
+    
+    std::cout << "Test 2: 100 / 3" << std::endl;
+    LongNumber c("100");
+    LongNumber d("3");
+    EXPECT_EQ(c / d, LongNumber("33"));
+    
+    std::cout << "Test 3: 999 / 999" << std::endl;
+    LongNumber e("999");
+    LongNumber f("999");
+    EXPECT_EQ(e / f, LongNumber("1"));
+    
+    std::cout << "Test 4: 123456789 / 1" << std::endl;
+    LongNumber g("123456789");
+    LongNumber h("1");
+    EXPECT_EQ(g / h, LongNumber("123456789"));
+    
+    std::cout << "Test 5: 500 / 500" << std::endl;
+    LongNumber i("500");
+    LongNumber j("500");
+    EXPECT_EQ(i / j, LongNumber("1"));
+    
+    std::cout << "Test 6: 5 / 10" << std::endl;
+    LongNumber k("5");
+    LongNumber l("10");
+    EXPECT_EQ(k / l, LongNumber("0"));
+    
+    std::cout << "Test 7: -100 / 5" << std::endl;
+    LongNumber m("-100");
+    LongNumber n("5");
+    EXPECT_EQ(m / n, LongNumber("-20"));
+    
+    std::cout << "Test 8: 100 / -5" << std::endl;
+    LongNumber o("100");
+    LongNumber p("-5");
+    EXPECT_EQ(o / p, LongNumber("-20"));
+    
+    std::cout << "Test 9: -100 / -5" << std::endl;
+    LongNumber q("-100");
+    LongNumber r("-5");
+    EXPECT_EQ(q / r, LongNumber("20"));
+    
+    std::cout << "=== FINISHED DIVISION TESTS ===\n";
+}
+
+TEST(LongNumberTest, Modulo) {
+    LongNumber a("12345");
+    LongNumber b("12");
+    LongNumber result = a % b;
+    EXPECT_EQ(result, LongNumber("9"));
+    
+    LongNumber c("100");
+    LongNumber d("3");
+    EXPECT_EQ(c % d, LongNumber("1"));
+    
+    LongNumber e("999");
+    LongNumber f("999");
+    EXPECT_EQ(e % f, LongNumber("0"));
+    
+    LongNumber g("5");
+    LongNumber h("10");
+    EXPECT_EQ(g % h, LongNumber("5"));
+    
+    LongNumber i("123456789");
+    LongNumber j("1");
+    EXPECT_EQ(i % j, LongNumber("0"));
+    
+    LongNumber k("-100");
+    LongNumber l("30");
+    LongNumber result2 = k % l;
+    EXPECT_EQ(result2, LongNumber("20"));
+}
+
+
+
+
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
     
     return RUN_ALL_TESTS();
 }
-
-
-
